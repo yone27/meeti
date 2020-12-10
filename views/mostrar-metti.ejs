@@ -1,0 +1,156 @@
+<div class="encabezado-evento">
+    <div class="contenedor">
+        <div class="resumen-evento">
+            <h1><%= meeti.titulo %></h1>
+            <div class="info-autor">
+                <div class="imagen">
+                    <% if(meeti.user.imagen) { %>
+                        <img src="/uploads/profiles/<%= meeti.user.imagen %>">
+                    <% } %>
+                </div>
+                <div class="informacion">
+                    <p>Organizado por:</p>
+                    <p class="autor">
+                        <a href="/usuarios/<%= meeti.user.id %>"><%= meeti.user.nombre %></a>
+                        Creador de:
+                        <a href="/grupos/<%= meeti.group.id %>"><%= meeti.group.nombre %></a>
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="pregunta-asistencia">
+            <form action="/confirmar-asistencia/<%= meeti.slug %>" id="confirmar-asistencia">
+                <% if(usuario.id){ %>
+                    <p>¿Asistirás?</p>
+                    <% 
+                        const existe = meeti.interesados.split('-').includes(usuario.id)
+                    %>
+                    <% if(existe){ %>
+                        <input type="submit" class="btn btn-rojo" value="Cancelar">
+                        <input type="hidden" id="accion" value="Cancelar">
+                    <% } else { %>
+                        <input type="submit" class="btn btn-azul" value="Confirmar">
+                        <input type="hidden" id="accion" value="Confirmar">
+                    <% } %>
+                <% }else{ %>
+                    <p>Inicia sesion</p>
+                <% } %>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- comments -->
+<main class="contenido-evento">
+    <div class="contenedor">
+        <!-- event -->
+        <div class="informacion-evento">
+            <div class="descripcion">
+                <% if(meeti.group.imagen){ %>    
+                    <img src="/uploads/groups/<%= meeti.group.imagen %>">
+                <% }else{ %>
+                    <img src="/img/meeti.jpg">
+                <% } %>
+                <%- meeti.descripcion %>
+            </div>
+            <div class="asistentes">
+                <div class="titulo">
+                    <% 
+                        let nroParticipantes
+                        if(meeti.interesados) {
+                            nroParticipantes = meeti.interesados.split('-')
+                    %>
+                        <h3><%= nroParticipantes.length %> Asistentes</h3>
+                    <%
+                        }else{
+                    %>
+                        <h3>0 Asistentes</h3>
+                    <% } %>
+                    <a href="/asistentes/<%= meeti.slug %>">Ver todos</a>
+                </div>
+            </div>
+            <div class="comentarios">
+                <h2>Comentarios</h2>
+                <% if(comments.length){ %>
+                    <% comments.forEach(comment => { %>
+                        <div class="comentario">
+                            <div class="imagen">    
+                            <% if(comment.user.imagen){ %>
+                                <img src="/uploads/profiles/<%= comment.user.imagen %>">
+                            <% } %>
+                            </div>
+                            <div class="texto">
+                                <p><%= comment.mensaje %></p>
+                                <p>Escrito por: <a href="/usuarios/ <%= comment.user.id %>"><%= comment.user.nombre %></a></p>
+                                <% if(comment.user.id === usuario.id || meeti.userId === usuario.id ){ %>
+                                    <form action="/eliminar-comentario" method="post" class="eliminar-comentario">
+                                        <input type="hidden"
+                                        name="idComentario"
+                                        readonly
+                                        value="<%= comment.id %>"
+                                        class="btn btn-azul">
+                                        <input type="submit"
+                                        value="eliminar"
+                                        class="btn btn-azul">
+                                    </form>
+                                <% } %>
+                            </div>
+                        </div>
+                    <% }) %>
+                <% }else{ %>
+                    <p>No hay comentarios aún</p>
+                <% } %>
+
+                
+                <% if(usuario.id){ %>
+                <!-- form comment -->
+                <form action="/meeti/<%= meeti.id %>"
+                    class="default-form comentarios" method="POST">
+                    <legend>Agrega un comentario</legend>
+                    <div class="campo">
+                        <label>Comentario</label>
+                        <textarea name="comentario"
+                            cols="30"
+                            placeholder="Escribe un comentario"
+                            rows="10"></textarea>
+                    </div>
+                    <div class="campo enviar">
+                        <input type="submit"
+                            class="btn btn-rosa"
+                            value="Enviar">
+                    </div>
+                </form>
+                <!-- /form comment -->
+                <% }else{ %>
+                    <p>Inicia sesion para agregar un commentario</p>
+                <% } %>
+
+            </div>
+        </div>
+        <!-- /event -->
+        <aside class="informacion">
+            <div class="fecha">
+                <% 
+                    moment.locale('es')
+                    const fecha = `${meeti.fecha} ${meeti.hora}` 
+                %>
+                <p><%= moment(fecha).format('LLLL') %> Horas</p>
+            </div>
+            <div class="ubicacion">
+                <p>
+                    <%= meeti.direccion %>,
+                    <%= meeti.ciudad %> -
+                    <%= meeti.estado %>,
+                    <%= meeti.pais %>
+                </p>
+            </div>
+            <!-- mapa -->
+            <input type="hidden" id="direccion" value="<%= meeti.direccion %>">
+            <input type="hidden" id="lat" value="<%= meeti.ubicacion.coordinates[0] %>">
+            <input type="hidden" id="lng" value="<%= meeti.ubicacion.coordinates[1] %>">
+            <div style="height: 300px;" id="ubicacion-meeti"></div>
+            <!-- /mapa -->
+        </aside>
+    </div>
+</main>
+<!-- /comments -->
