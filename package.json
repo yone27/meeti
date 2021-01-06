@@ -4,9 +4,10 @@
     "description": "",
     "main": "index.js",
     "scripts": {
-        "dev": "nodemon ./index.js",
-        "start": "concurrently \" npm run dev \" \" npm run watch \" ",
-        "watch": "webpack --w --mode development"
+        "watch": "nodemon ./index.js",
+        "start": "node ./index.js",
+        "dev": "concurrently \" npm run watch \" \" npm run watchwebpack \"",
+        "watchwebpack": "webpack --w --mode development"
     },
     "keywords": [],
     "author": "",

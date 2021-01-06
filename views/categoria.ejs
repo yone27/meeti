@@ -5,8 +5,8 @@
         <div class="grid columnas-md-3 ">   
         <% meetis.forEach(meeti => { %>
             <div class="card">
-                <% if(meeti.grupo.imagen){ %>    
-                    <img src="/uploads/groups/<%= meeti.grupo.imagen %>">
+                <% if(meeti.group.imagen){ %>    
+                    <img src="/uploads/groups/<%= meeti.group.imagen %>">
                 <% }else{ %>
                     <img src="/img/meeti.jpg">
                 <% } %>
@@ -16,7 +16,7 @@
                     const fecha = `${meeti.fecha} ${meeti.hora}` 
                     %>
                     <p class="fecha"><%= moment(fecha).format('LLLL') %> Horas</p>
-                    <a href="#">
+                    <a href="/meeti/<%= meeti.slug %>">
                         <h3><%= meeti.titulo %></h3>
                     </a>
                     <div class="info-autor">

@@ -67,7 +67,6 @@ exports.signUp = async (req, res) => {
 
     try {
         const usuario = await Users.create(user)
-
         // enviar email confirmacion
         // const url = `http://${req.headers.host}/confirmar-cuenta/${user.email}`
         // await enviarEmail.enviarEmail({
@@ -78,7 +77,7 @@ exports.signUp = async (req, res) => {
         // })
         usuario.activo = 1
         await usuario.save()
-        req.flash('exito', 'Hemos enviao un email, confirma tu cuenta')
+        req.flash('exito', '¡Perfecto! ahora inicie sesión')
         res.redirect('/iniciar-sesion')
     } catch (error) {
         const erroresSequelize = error.errors.map(err => err.message)
